@@ -24,7 +24,7 @@ def noko_for(url)
   return noko
 end
 
-def scrape_list(url)
+def scrape_list(url, house)
   warn url
   noko = noko_for(url)
   noko.css('#itemListPrimary .itemContainer').each do |person|
@@ -35,6 +35,7 @@ def scrape_list(url)
       image: person.css('.catItemImage img/@src').text,
       party: person.xpath('.//li/span[.="Affiliation"]/following-sibling::span').text.tidy,
       area:  person.xpath('.//li/span[.="Constituency"]/following-sibling::span').text.tidy,
+      house: house,
       source: person.css('h3.catItemTitle a/@href').text,
     }
     data[:image] = URI.join(url, data[:image]).to_s.sub('_XS','_XL') unless data[:image].to_s.empty?
@@ -44,7 +45,7 @@ def scrape_list(url)
   end
 
   unless (next_page = noko.css('li.pagination-next a/@href')).empty?
-    scrape_list(URI.join url, next_page.text)
+    scrape_list(URI.join(url, next_page.text), house)
   end
 end
 
@@ -64,4 +65,5 @@ def scrape_person(url)
   return data
 end
 
-scrape_list('http://www.parlzim.gov.zw/senators-members/members')
+scrape_list('http://www.parlzim.gov.zw/senators-members/members', 'assembly')
+scrape_list('http://www.parlzim.gov.zw/senators-members/senators', 'senate')
