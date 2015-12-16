@@ -56,7 +56,7 @@ def scrape_person(url)
 
   data = { 
     gender: leg.xpath('.//li/span[.="Gender:"]/following-sibling::span').text.tidy.downcase,
-    email: leg.xpath('.//li/span[.="Email:"]/following-sibling::span/a/@href').text.sub('mailto:','').split(' ').last,
+    email: leg.xpath('.//li/span[.="Email:"]/following-sibling::span/a/@href').text.sub('mailto:','').gsub(/\s?@\s?/,'@').split(' ').last,
     address: full.xpath('.//strong[contains(.,"Postal")]/following-sibling::span').text.tidy,
     home_address: full.xpath('.//strong[contains(.,"residential")]/following-sibling::span').text.tidy,
     cell: full.xpath('.//strong[contains(.,"Cell")]/following-sibling::span').text.tidy,
