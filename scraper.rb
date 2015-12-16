@@ -31,7 +31,7 @@ def scrape_list(url, house)
     data = { 
       # id: td[0].text.tidy,
       id: person.css('h3.catItemTitle a/@href').text.split('/').last.sub(/^hon-/,''),
-      name: person.css('h3.catItemTitle').text.tidy.sub(/^Hon\.? /,''),
+      name: person.css('h3.catItemTitle').text.tidy.sub(/^Hon\.? /i,''),
       image: person.css('.catItemImage img/@src').text,
       party: person.xpath('.//li/span[.="Affiliation"]/following-sibling::span').text.tidy,
       area:  person.xpath('.//li/span[.="Constituency"]/following-sibling::span').text.tidy,
