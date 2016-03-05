@@ -31,7 +31,7 @@ def scrape_list(url, house)
     data = { 
       # id: td[0].text.tidy,
       id: person.css('h3.catItemTitle a/@href').text.split('/').last.sub(/^hon-/,''),
-      name: person.css('h3.catItemTitle').text.tidy.sub(/^Hon\.? /i,''),
+      name: person.css('h3.catItemTitle').text.tidy.sub(/^Hon\.? /i,'').split(/\s+/, 2).reverse.join(' '),
       image: person.css('.catItemImage img/@src').text,
       party: person.xpath('.//li/span[.="Affiliation"]/following-sibling::span').text.tidy,
       area:  person.xpath('.//li/span[.="Constituency"]/following-sibling::span').text.tidy,
@@ -41,6 +41,7 @@ def scrape_list(url, house)
     data[:image] = URI.join(url, data[:image]).to_s.sub('_XS','_XL') unless data[:image].to_s.empty?
     data[:source] = URI.join(url, data[:source]).to_s unless data[:image].to_s.empty?
     data.merge!(scrape_person(data[:source]))
+    warn data[:name]
     ScraperWiki.save_sqlite([:id], data)
   end
 
